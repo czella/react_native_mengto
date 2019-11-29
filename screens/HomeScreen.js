@@ -14,9 +14,13 @@ import Logo from '../components/Logo';
 import Course from '../components/Course';
 import Menu from "../components/Menu";
 import { connect } from 'react-redux';
+import Avatar from '../components/Avatar';
 
 function mapStateToProps(state) {
-  return { action: state.action }
+  return {
+    action: state.action,
+    name: state.name
+  }
 }
 
 function mapDispacthToProps(dispatch) {
@@ -26,6 +30,11 @@ function mapDispacthToProps(dispatch) {
 }
 
 class HomeScreen extends React.Component {
+
+  static navigationOptions = {
+    header: null
+  };
+
   state = {
     scale: new Animated.Value(1),
     opacity: new Animated.Value(1)
@@ -84,12 +93,12 @@ class HomeScreen extends React.Component {
                 <TouchableOpacity onPress={this.props.openMenu} style={{
                   position: "absolute",
                   top: 0,
-                  left: 5,
+                  left: 20,
                 }}>
-                  <Avatar source={require('../assets/avatar.jpg')}></Avatar>
+                  <Avatar />
                 </TouchableOpacity>
                 <Title>Welcome back, </Title>
-                <Name>Meng</Name>
+                <Name>{ this.props.name }</Name>
                 <NotificationIcon
                   style={{
                     position: "absolute",
@@ -124,14 +133,20 @@ class HomeScreen extends React.Component {
                 showsHorizontalScrollIndicator={false}
               >
                 { cards.map((card, index) => (
-                  <Card
+                  <TouchableOpacity
                     key={index}
-                    title={card.title}
-                    image={card.image}
-                    caption={card.caption}
-                    logo={card.logo}
-                    subtitle={card.subtitle}
-                  />
+                    onPress={() => {this.props.navigation.push("Section", {
+                      section: card
+                    })}}
+                  >
+                    <Card
+                      title={card.title}
+                      image={card.image}
+                      caption={card.caption}
+                      logo={card.logo}
+                      subtitle={card.subtitle}
+                    />
+                  </TouchableOpacity>
                 ))}
               </ScrollView>
               <Subtitle>Popular Courses</Subtitle>
@@ -165,7 +180,8 @@ const RootView = styled.View`
 const Container = styled.View`
   flex: 1;
   background: #f0f3f5;
-  border-radius: 10px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 `;
 
 const AnimatedContainer = Animated.createAnimatedComponent(Container);
@@ -186,14 +202,6 @@ const TitleBar = styled.View`
   width: 100%;
   margin-top: 50px;
   padding-left: 80px;
-`;
-
-const Avatar = styled.Image`
-  width: 44px;
-  height: 44px;
-  background: black;
-  border-radius: 22px;
-  margin-left: 20px;
 `;
 
 const Subtitle = styled.Text`
